@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Introduction
 
 This template includes a minimal setup for writing a backend in [Koa](https://koajs.com/).
@@ -21,3 +22,6 @@ This template includes a minimal setup for writing a backend in [Koa](https://ko
 - [koa-pino-http](https://www.npmjs.com/package/koa-pino-logger) provides logging
 - [Jest](https://jestjs.io/) is used for testing along with [supertest](https://www.npmjs.com/package/supertest)
 - There is a simple error handler provided in [src/middleware/error-handler.ts]()
+=======
+# heat-control-scheduler
+>>>>>>> origin/main
