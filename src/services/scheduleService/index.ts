@@ -1,12 +1,10 @@
+import { DateTime } from 'luxon'
+
 import { HourPrice, Schedule } from '../../common/types'
 
 const alwaysOkThreshold = 100
 const neverOkThreshold = 250
 const maximumInactiveHours = 12
-
-const addHourToDate = (date: Date): Date => {
-  return new Date(date.getTime() + 3600000)
-}
 
 const createScheduleForDay = (prices: HourPrice[]): Schedule[] | null => {
   let inactiveHours = prices.filter((price) => {
@@ -36,17 +34,18 @@ const createScheduleForDay = (prices: HourPrice[]): Schedule[] | null => {
     return null
   }
 
-  let lastTime: Date | null = null
-  let startTime: Date | null = null
+  let lastTime: DateTime | null = null
+  let startTime: DateTime | null = null
   const schedules: Schedule[] = []
 
   inactiveHours.forEach((price) => {
+    console.log('startTime', startTime?.hour, 'lastTime', lastTime?.hour)
     if (lastTime) {
-      if (price.startLocalTime.getHours() !== lastTime.getHours() + 1) {
+      if (price.startLocalTime.hour !== lastTime.hour + 1) {
         if (startTime) {
           schedules.push({
             startTime: startTime,
-            endTime: addHourToDate(lastTime),
+            endTime: lastTime.plus({ hours: 1 }),
           })
 
           startTime = null
@@ -66,7 +65,7 @@ const createScheduleForDay = (prices: HourPrice[]): Schedule[] | null => {
   if (startTime && lastTime) {
     schedules.push({
       startTime: startTime,
-      endTime: addHourToDate(lastTime),
+      endTime: (lastTime as DateTime).plus({ hours: 1 }),
     })
   }
 

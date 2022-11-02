@@ -1,12 +1,14 @@
+import { DateTime } from 'luxon'
+
 interface HourPrice {
   startTimestamp: number
-  startLocalTime: Date
+  startLocalTime: DateTime
   price: number
 }
 
 interface Schedule {
-  startTime: Date
-  endTime: Date
+  startTime: DateTime
+  endTime: DateTime
 }
 
 export { HourPrice, Schedule }

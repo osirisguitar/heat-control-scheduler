@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { DateTime } from 'luxon'
 import * as dotenv from 'dotenv' // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 import { HourPrice } from '../../common/types'
 dotenv.config()
@@ -48,23 +49,19 @@ const getFacilityId = async (jwt: string): Promise<string> => {
   return data.data.parameters.facility_id
 }
 
-const getSpotPrices = async (day?: Date): Promise<HourPrice[]> => {
+const getSpotPrices = async (day?: DateTime): Promise<HourPrice[]> => {
   const jwt = await login()
   const facilictyId = await getFacilityId(jwt)
 
-  const today = new Date()
-  today.setTime(today.getTime() + 86400000)
-
   if (!day) {
-    day = new Date()
-    day.setTime(day.getTime() + 86400000)
-  } else {
-    day.setTime(day.getTime() + 86400000)
-    today.setTime(day.getTime() - 86400000)
+    day = DateTime.now()
   }
 
-  const fromDateString = today.toISOString().substring(0, 10)
-  const toDateString = day.toISOString().substring(0, 10)
+  day = day.plus({ days: 1 })
+  const today = day.minus({ days: 1 })
+
+  const fromDateString = today.toFormat('yyyy-MM-dd')
+  const toDateString = day.toFormat('yyyy-MM-dd')
 
   console.log('getting', fromDateString, toDateString)
 
@@ -87,7 +84,10 @@ const getSpotPrices = async (day?: Date): Promise<HourPrice[]> => {
     const dataPoint = data.data[timestamp]
     return {
       startTimestamp: Number(timestamp),
-      startLocalTime: new Date(Date.parse(dataPoint.localtime)),
+      startLocalTime: DateTime.fromFormat(
+        dataPoint.localtime,
+        'yyyy-MM-dd hh:mm'
+      ),
       price: dataPoint.price / 1000,
     }
   })
