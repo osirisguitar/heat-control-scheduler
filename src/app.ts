@@ -1,29 +1,22 @@
-import Koa from 'koa';
-import bodyParser from 'koa-bodyparser';
-import pinoLogger from 'koa-pino-logger';
+import Koa from 'koa'
+import bodyParser from 'koa-bodyparser'
 
-import exampleApi from './api';
-import errorHandler from './middlewares/error-handler';
+import api from './api'
+import errorHandler from './middlewares/error-handler'
 
-const app = new Koa();
-const logger = pinoLogger();
-
-app.use(logger);
+const app = new Koa()
 
 app.on('error', (err) => {
-  console.log('on:error');
-  logger.logger.error(err);
-});
+  console.error(err)
+})
 
-app.use(errorHandler());
+app.use(errorHandler())
 
-// TODO: Remove me. koa-pino-logger uses standard log levels
 app.use(async (ctx, next) => {
-  ctx.log.warn('Hello');
-  await next();
-});
+  await next()
+})
 
-app.use(bodyParser());
-app.use(exampleApi.routes());
+app.use(bodyParser())
+app.use(api.routes())
 
-export default app;
+export default app

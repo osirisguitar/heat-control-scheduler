@@ -6,7 +6,7 @@ const alwaysOkThreshold = 100
 const neverOkThreshold = 250
 const maximumInactiveHours = 12
 
-const createScheduleForDay = (prices: HourPrice[]): Schedule[] | null => {
+const createSchedulesForDay = (prices: HourPrice[]): Schedule[] | null => {
   let inactiveHours = prices.filter((price) => {
     return price.price > alwaysOkThreshold
   })
@@ -69,9 +69,7 @@ const createScheduleForDay = (prices: HourPrice[]): Schedule[] | null => {
     })
   }
 
-  console.log(schedules)
-
   return schedules
 }
 
-export { createScheduleForDay }
+export { createSchedulesForDay }

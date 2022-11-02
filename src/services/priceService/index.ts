@@ -1,7 +1,9 @@
+import { HourPrice } from '../../common/types'
+
+import KoaRouter from '@koa/router'
 import axios from 'axios'
 import { DateTime } from 'luxon'
-import * as dotenv from 'dotenv' // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
-import { HourPrice } from '../../common/types'
+import * as dotenv from 'dotenv'
 dotenv.config()
 
 const baseUrl = 'https://api2.greenely.com'
@@ -54,7 +56,7 @@ const getSpotPrices = async (day?: DateTime): Promise<HourPrice[]> => {
   const facilictyId = await getFacilityId(jwt)
 
   if (!day) {
-    day = DateTime.now()
+    day = DateTime.now().plus({ days: 1 })
   }
 
   day = day.plus({ days: 1 })
@@ -62,8 +64,6 @@ const getSpotPrices = async (day?: DateTime): Promise<HourPrice[]> => {
 
   const fromDateString = today.toFormat('yyyy-MM-dd')
   const toDateString = day.toFormat('yyyy-MM-dd')
-
-  console.log('getting', fromDateString, toDateString)
 
   const headers = {
     ...baseHeaders,
@@ -92,9 +92,17 @@ const getSpotPrices = async (day?: DateTime): Promise<HourPrice[]> => {
     }
   })
 
-  console.log(hourPrices)
-
   return hourPrices
 }
 
 export { getSpotPrices }
+
+export const routes = (router: KoaRouter) => {
+  router.get('/prices', async (ctx) => {
+    const { params } = ctx
+
+    const result = await getSpotPrices()
+
+    ctx.body = result
+  })
+}
