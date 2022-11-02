@@ -4,4 +4,9 @@ interface HourPrice {
   price: number
 }
 
-export { HourPrice }
+interface Schedule {
+  startTime: Date
+  endTime: Date
+}
+
+export { HourPrice, Schedule }
