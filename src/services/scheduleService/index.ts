@@ -31,7 +31,7 @@ const createSchedulesForDay = (prices: HourPrice[]): Schedule[] | null => {
   })
 
   if (inactiveHours.length === 0) {
-    return null
+    return []
   }
 
   let lastTime: DateTime | null = null

@@ -98,10 +98,16 @@ const getSpotPrices = async (day?: DateTime): Promise<HourPrice[]> => {
 export { getSpotPrices }
 
 export const routes = (router: KoaRouter) => {
-  router.get('/prices', async (ctx) => {
+  router.get('/prices/:date*', async (ctx) => {
     const { params } = ctx
 
-    const result = await getSpotPrices()
+    let date = DateTime.now().plus({ days: 1 })
+
+    if (params.date) {
+      date = DateTime.fromFormat(params.date, 'yyyy-MM-dd')
+    }
+
+    const result = await getSpotPrices(date)
 
     ctx.body = result
   })
