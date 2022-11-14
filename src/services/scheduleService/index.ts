@@ -1,4 +1,6 @@
 import { DateTime } from 'luxon'
+import * as dotenv from 'dotenv'
+dotenv.config()
 
 import { HourPrice, Schedule } from '../../common/types'
 
