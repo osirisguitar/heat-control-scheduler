@@ -92,6 +92,14 @@ const getSpotPrices = async (day?: DateTime): Promise<HourPrice[]> => {
     }
   })
 
+  if (
+    hourPrices.every((price) => {
+      return price.price === 0
+    })
+  ) {
+    return []
+  }
+
   return hourPrices
 }
 

@@ -2,9 +2,15 @@ import { DateTime } from 'luxon'
 
 import { HourPrice, Schedule } from '../../common/types'
 
-const alwaysOkThreshold = 100
-const neverOkThreshold = 250
-const maximumInactiveHours = 12
+const alwaysOkThreshold = process.env.ALWAYS_OK_THRESHOLD
+  ? Number(process.env.ALWAYS_OK_THRESHOLD)
+  : 100
+const neverOkThreshold = process.env.NEVER_OK_THRESHOLD
+  ? Number(process.env.NEVER_OK_THRESHOLD)
+  : 250
+const maximumInactiveHours = process.env.MAXIMUM_INACTIVE_HOURS
+  ? Number(process.env.MAXIMUM_INACTIVE_HOURS)
+  : 9
 
 const createSchedulesForDay = (prices: HourPrice[]): Schedule[] | null => {
   let inactiveHours = prices.filter((price) => {
