@@ -47,7 +47,6 @@ const createSchedulesForDay = (prices: HourPrice[]): Schedule[] | null => {
   const schedules: Schedule[] = []
 
   inactiveHours.forEach((price) => {
-    console.log('startTime', startTime?.hour, 'lastTime', lastTime?.hour)
     if (lastTime) {
       if (price.startLocalTime.hour !== lastTime.hour + 1) {
         if (startTime) {
