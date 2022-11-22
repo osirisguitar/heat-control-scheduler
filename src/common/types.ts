@@ -9,6 +9,10 @@ interface HourPrice {
 interface Schedule {
   startTime: DateTime
   endTime: DateTime
+  minPrice: Number
+  maxPrice: Number
+  prices: Number[]
+  savings: Number
 }
 
 export { HourPrice, Schedule }

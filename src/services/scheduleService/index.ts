@@ -13,6 +13,8 @@ const neverOkThreshold = process.env.NEVER_OK_THRESHOLD
 const maximumInactiveHours = process.env.MAXIMUM_INACTIVE_HOURS
   ? Number(process.env.MAXIMUM_INACTIVE_HOURS)
   : 9
+const hourConsumption : number = 2.5
+
 
 const createSchedulesForDay = (prices: HourPrice[]): Schedule[] | null => {
   let inactiveHours = prices.filter((price) => {
@@ -44,18 +46,30 @@ const createSchedulesForDay = (prices: HourPrice[]): Schedule[] | null => {
 
   let lastTime: DateTime | null = null
   let startTime: DateTime | null = null
+  let intervalPrices: HourPrice[] = []
   const schedules: Schedule[] = []
 
   inactiveHours.forEach((price) => {
+    intervalPrices.push(price)
+
     if (lastTime) {
       if (price.startLocalTime.hour !== lastTime.hour + 1) {
         if (startTime) {
+          intervalPrices.pop()
+          const sortedPrices = intervalPrices.sort((a, b) => (a.price > b.price ? 1 : -1))
+
           schedules.push({
             startTime: startTime,
             endTime: lastTime.plus({ hours: 1 }),
+            minPrice: sortedPrices[0].price,
+            maxPrice: sortedPrices[sortedPrices.length - 1].price,
+            prices: intervalPrices.map((price) => price.price),
+            savings: intervalPrices.map((price) => price.price).reduce((total, current) => total + hourConsumption * current, 0),
           })
 
           startTime = null
+          intervalPrices = []
+          intervalPrices.push(price)
         } else {
           startTime = price.startLocalTime
         }
@@ -70,9 +84,15 @@ const createSchedulesForDay = (prices: HourPrice[]): Schedule[] | null => {
   })
 
   if (startTime && lastTime) {
+    const sortedPrices = intervalPrices.sort((a, b) => (a.price > b.price ? 1 : -1))
+
     schedules.push({
       startTime: startTime,
       endTime: (lastTime as DateTime).plus({ hours: 1 }),
+      minPrice: sortedPrices[0].price,
+      maxPrice: sortedPrices[sortedPrices.length - 1].price,
+      prices: intervalPrices.map((price) => price.price),
+      savings: intervalPrices.map((price) => price.price).reduce((total, current) => total + hourConsumption * current, 0),
     })
   }
 
