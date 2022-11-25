@@ -10,9 +10,12 @@ const baseHeaders = {
 
 const setSchedule = async (schedule: Schedule): Promise<any> => {
   const payload = {
-    from: schedule.startTime.toFormat('yyyy-MM-dd HH:mm:ss.SSS'),
-    to: schedule.endTime.toFormat('yyyy-MM-dd HH:mm:ss.SSS'),
-    state: 1,
+    controlName: 'lower-temperature',
+    schedule: {
+      from: schedule.startTime.toFormat('yyyy-MM-dd HH:mm:ss.SSS'),
+      to: schedule.endTime.toFormat('yyyy-MM-dd HH:mm:ss.SSS'),
+      state: 1,  
+    },
   }
 
   const options = {
